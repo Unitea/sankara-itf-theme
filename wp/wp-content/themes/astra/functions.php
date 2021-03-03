@@ -158,3 +158,99 @@ if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-filters.php';
 require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-hooks.php';
 require_once ASTRA_THEME_DIR . 'inc/core/deprecated/deprecated-functions.php';
+
+// カスタム投稿の設定
+function create_post_type(){
+	//カスタム投稿タイプがダッシュボードの編集画面で使用する項目を配列で用意
+	$supports = array(
+	  'title',
+	  'author',
+	  'thumbnail',
+	  'revisions'
+	);
+	//カスタム投稿タイプを追加するための関数
+	//第一引数は任意のカスタム投稿タイプ名
+	register_post_type('live',
+	  array(
+		'label' => 'LIVE',
+		'public' => true,
+		'has_archive' => true,
+		'menu_position' => 5,
+		'supports' => $supports,
+		'rewrite' => array(
+			'slug' => 'live-new',
+		),
+	  )
+	);
+}
+add_action('init','create_post_type');
+
+// liveのカスタムフィールド
+function add_custom_fields(){
+	add_meta_box(
+		'custom_setting',
+		'LIVE情報',
+		'insert_live_custom_fields',
+		'live',
+		'normal',
+		'high'
+	);
+}
+add_action('admin_menu', 'add_custom_fields');
+
+// liveカスタムフィールドの入力エリア
+function insert_live_custom_fields(){
+	global $post;
+	//get_post_meta関数を使ってpostmeta情報を取得
+	//TITLE, LIVE, TIME, TICKET, INFO, LINK
+	$forms = array(
+		'TITLE',
+		'LIVE',
+		'TIME',
+		'TICKET',
+		'INFO',
+		'LINK',
+	);
+	foreach ($forms as $key) {
+		$value = get_post_meta(
+			$post->ID,
+			$key,
+			true
+		);
+		echo $key . '<br><textarea name="' . $key . '" cols="70" rows="5">' . htmlspecialchars($value) . '</textarea><br><br>';
+	}
+}
+
+// liveカスタムフィールドの保存
+function save_custom_fields( $post_id ) {
+	$forms = array(
+		'TITLE',
+		'LIVE',
+		'TIME',
+		'TICKET',
+		'INFO',
+		'LINK',
+	);
+	foreach ($forms as $key) {
+		if(isset($_POST[$key])){
+			// 保存
+			update_post_meta($post_id, $key, $_POST[$key]);
+		}else{
+			// 削除
+			delete_post_meta($post_id, $key);
+		}
+	}
+}
+add_action('save_post', 'save_custom_fields');
+
+// liveページの表示件数を5件に変更する
+add_action('pre_get_posts', 'my_custom_query_vars');
+function my_custom_query_vars($query) {
+	/* @var $query WP_Query */
+	if ( ! is_admin() && $query->is_main_query()) {
+		if (is_post_type_archive('live')) {
+			$query->set('posts_per_page' , 5);
+		}
+	}
+	return $query;
+}
