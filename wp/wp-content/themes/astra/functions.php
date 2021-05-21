@@ -178,7 +178,7 @@ function create_post_type(){
 		'menu_position' => 5,
 		'supports' => $supports,
 		'rewrite' => array(
-			'slug' => 'live-new',
+			'slug' => 'live',
 		),
 	  )
 	);
