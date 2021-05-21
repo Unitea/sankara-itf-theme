@@ -49,17 +49,6 @@ get_header(); ?>
 														<section class="elementor-section elementor-inner-section elementor-element elementor-element-40bf433 elementor-section-boxed elementor-section-height-default elementor-section-height-default" data-id="40bf433" data-element_type="section">
 															<div class="elementor-container elementor-column-gap-default">
 																<div class="elementor-row">
-																	<div class="elementor-column elementor-col-50 elementor-inner-column elementor-element elementor-element-f800d46" data-id="f800d46" data-element_type="column" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
-																		<div class="elementor-column-wrap elementor-element-populated">
-																			<div class="elementor-widget-wrap">
-																				<div class="elementor-element elementor-element-560b742 elementor-widget elementor-widget-heading" data-id="560b742" data-element_type="widget" data-widget_type="heading.default">
-																					<div class="elementor-widget-container">
-																						<h4 class="elementor-heading-title elementor-size-default">TITLE</h4>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
 																	<div class="elementor-column elementor-col-50 elementor-inner-column elementor-element elementor-element-613b7c7" data-id="613b7c7" data-element_type="column">
 																		<div class="elementor-column-wrap elementor-element-populated">
 																			<div class="elementor-widget-wrap">
@@ -123,7 +112,11 @@ get_header(); ?>
 																				<?php else: ?>
 																				<div class="elementor-element elementor-element-bdf7ead elementor-widget elementor-widget-heading" data-id="bdf7ead" data-element_type="widget" data-widget_type="heading.default">
 																					<div class="elementor-widget-container">
+																						<?php if ($key != 'LINK'): ?>
 																						<h4 class="elementor-heading-title elementor-size-default"><?php echo nl2br($value); ?></h4>
+																						<?php else: ?>
+																						<div class="elementor-size-default"><a href="<?php echo $value; ?>" target="_blank"><?php echo $value; ?></a></div>
+																						<?php endif; ?>
 																					</div>
 																				</div>
 																				<?php endif; ?>
